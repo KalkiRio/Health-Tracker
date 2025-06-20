@@ -1,3 +1,5 @@
+#Note: This project is under redevelopment and is being updated for better look and feel, if you want to contribute feel free to do so, Thanks.
+
 # HealthTracker - Personal Health Management System
 
 ## 🎯 Project Overview
@@ -274,7 +276,7 @@ healthtracker/
 ### Installation Steps
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/healthtracker.git
+git clone https://github.com/KalkiRio/Health-Tracker.git
 cd healthtracker
 
 # Create virtual environment

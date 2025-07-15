@@ -4,16 +4,14 @@ services:
     name: healthtracker
     env: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
-    startCommand: "gunicorn healthtracker.wsgi:application"
+    startCommand: "python manage.py runserver 0.0.0.0:10000"
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.12.0
-      - key: DEBUG
-        value: False
       - key: SECRET_KEY
         generateValue: true
+      - key: DEBUG
+        value: "False"
       - key: ALLOWED_HOSTS
-        value: "*.onrender.com"
+        value: "*"
       - key: DATABASE_URL
         fromDatabase:
           name: healthtracker-db
@@ -22,4 +20,4 @@ services:
 databases:
   - name: healthtracker-db
     databaseName: healthtracker
-    user: healthtracker
+    user: healthtracker_user

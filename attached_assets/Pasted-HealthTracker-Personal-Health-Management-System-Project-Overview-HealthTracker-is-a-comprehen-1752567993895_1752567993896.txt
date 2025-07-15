@@ -1,0 +1,142 @@
+HealthTracker - Personal Health Management System
+
+🎯 Project Overview
+
+HealthTracker is a comprehensive web application built with Django that helps users monitor and manage their health metrics, including weight tracking, exercise logging, meal planning, and health goal setting. The application features a modern, responsive UI with both light and dark themes.
+
+✨ Key Features
+
+User Authentication & Profiles: Secure registration, login, and personalized dashboards
+Medical Profile Management: Blood group, allergies, medical conditions, emergency contacts
+Health Metrics Tracking: Weight, BMI, blood pressure, heart rate, glucose levels
+Medical Reports: Upload, download, and organize medical documents (PDFs, images)
+Medicine & Prescription Tracking: Medication schedules, dosage reminders, prescription management
+Exercise & Activity Logging: Workout tracking with duration, calories burned, and exercise types
+Nutrition Management: Meal logging, calorie tracking, and nutritional information
+Goal Setting & Progress: Set health goals and track progress with visual charts
+Data Visualization: Interactive charts and graphs for health trends
+Document Management: Secure file storage with categorization and search
+Responsive Design: Mobile-first approach with light/dark theme toggle
+Export Functionality: Export health data and medical summaries as PDF reports
+🏗️ Project Structure
+
+healthtracker/
+├── manage.py
+├── requirements.txt
+├── README.md
+├── .env.example
+├── .gitignore
+├── Procfile                    # For Heroku deployment
+├── runtime.txt                 # Python version for deployment
+├── healthtracker/              # Main project directory
+│   ├── __init__.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └── asgi.py
+├── apps/                       # Custom apps directory
+│   ├── __init__.py
+│   ├── accounts/               # User management & medical profiles
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   ├── serializers.py      # For API endpoints
+│   │   └── migrations/
+│   ├── tracker/                # Core health tracking
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   ├── utils.py            # Helper functions
+│   │   └── migrations/
+│   ├── medical/                # Medical records & documents
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   ├── utils.py            # File handling utilities
+│   │   └── migrations/
+│   ├── medicines/              # Medicine & prescription tracking
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── urls.py
+│   │   ├── forms.py
+│   │   ├── tasks.py            # For medication reminders
+│   │   └── migrations/
+│   └── dashboard/              # Dashboard and analytics
+│       ├── __init__.py
+│       ├── admin.py
+│       ├── apps.py
+│       ├── models.py
+│       ├── views.py
+│       ├── urls.py
+│       └── migrations/
+├── templates/                  # HTML templates
+│   ├── base.html
+│   ├── registration/
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   └── profile.html
+│   ├── tracker/
+│   │   ├── dashboard.html
+│   │   ├── add_weight.html
+│   │   ├── add_exercise.html
+│   │   ├── add_meal.html
+│   │   └── goals.html
+│   ├── medical/
+│   │   ├── medical_profile.html
+│   │   ├── upload_report.html
+│   │   ├── reports_list.html
+│   │   └── report_detail.html
+│   ├── medicines/
+│   │   ├── medicine_list.html
+│   │   ├── add_medicine.html
+│   │   ├── prescription_upload.html
+│   │   └── medication_schedule.html
+│   └── includes/
+│       ├── navbar.html
+│       ├── sidebar.html
+│       └── footer.html
+├── static/                     # Static files
+│   ├── css/
+│   │   ├── style.css
+│   │   ├── themes.css
+│   │   └── responsive.css
+│   ├── js/
+│   │   ├── main.js
+│   │   ├── charts.js
+│   │   ├── theme-toggle.js
+│   │   └── dashboard.js
+│   ├── images/
+│   │   ├── logo.png
+│   │   └── default-avatar.png
+│   └── vendors/                # Third-party libraries
+│       ├── bootstrap/
+│       ├── chart.js/
+│       └── fontawesome/
+├── media/                      # User uploaded files
+│   ├── profile_pics/
+│   ├── medical_reports/
+│   │   ├── lab_reports/
+│   │   ├── prescriptions/
+│   │   ├── xrays/
+│   │   └── other_documents/
+│   └── medicine_images/
+└── tests/                      # Test files
+    ├── __init__.py
+    ├── test_models.py
+    ├── test_views.py
+    └── test_forms.py

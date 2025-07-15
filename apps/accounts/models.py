@@ -1,159 +1,51 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.contrib.auth.models import User
+from django.urls import reverse
 from PIL import Image
 
-class User(AbstractUser):
-    """Extended User model with health and medical profile information"""
-    
-    # Basic Profile Information
-    email = models.EmailField(unique=True)
-    date_of_birth = models.DateField(null=True, blank=True)
-    phone_number = models.CharField(max_length=15, blank=True)
-    profile_picture = models.ImageField(
-        upload_to='profile_pics/', 
-        default='profile_pics/default.jpg',
-        blank=True
-    )
-    
-    # Physical Characteristics
-    height = models.FloatField(
-        null=True, 
-        blank=True, 
-        help_text="Height in centimeters",
-        validators=[MinValueValidator(50), MaxValueValidator(300)]
-    )
-    current_weight = models.FloatField(
-        null=True, 
-        blank=True, 
-        help_text="Current weight in kilograms",
-        validators=[MinValueValidator(20), MaxValueValidator(500)]
-    )
-    
-    # Activity Level
+class UserProfile(models.Model):
+    """Extended user profile with basic information"""
+
+    GENDER_CHOICES = [
+        ('M', 'Male'),
+        ('F', 'Female'),
+        ('O', 'Other'),
+    ]
+
     ACTIVITY_CHOICES = [
-        ('sedentary', 'Sedentary (little/no exercise)'),
-        ('light', 'Lightly active (light exercise 1-3 days/week)'),
-        ('moderate', 'Moderately active (moderate exercise 3-5 days/week)'),
-        ('active', 'Very active (hard exercise 6-7 days/week)'),
-        ('extra', 'Extra active (very hard exercise, physical job)')
+        ('sedentary', 'Sedentary (little or no exercise)'),
+        ('light', 'Light (exercise 1-3 times/week)'),
+        ('moderate', 'Moderate (exercise 4-5 times/week)'),
+        ('active', 'Active (daily exercise or intense exercise 3-4 times/week)'),
+        ('extra', 'Extra Active (very intense exercise daily, or physical job)'),
     ]
-    activity_level = models.CharField(
-        max_length=20, 
-        choices=ACTIVITY_CHOICES, 
-        default='moderate'
-    )
-    
-    # Medical Information
-    BLOOD_GROUP_CHOICES = [
-        ('A+', 'A Positive'),
-        ('A-', 'A Negative'),
-        ('B+', 'B Positive'),
-        ('B-', 'B Negative'),
-        ('AB+', 'AB Positive'),
-        ('AB-', 'AB Negative'),
-        ('O+', 'O Positive'),
-        ('O-', 'O Negative'),
-        ('unknown', 'Unknown'),
-    ]
-    blood_group = models.CharField(
-        max_length=10, 
-        choices=BLOOD_GROUP_CHOICES, 
-        default='unknown'
-    )
-    
-    # Medical Conditions and Allergies
-    known_allergies = models.TextField(
-        blank=True,
-        help_text="List any known allergies (food, medication, environmental)"
-    )
-    medical_conditions = models.TextField(
-        blank=True,
-        help_text="List any chronic conditions, diseases, or ongoing medical issues"
-    )
-    current_medications = models.TextField(
-        blank=True,
-        help_text="List current medications and dosages"
-    )
-    
-    # Emergency Contact Information
-    emergency_contact_name = models.CharField(max_length=100, blank=True)
-    emergency_contact_relationship = models.CharField(max_length=50, blank=True)
-    emergency_contact_phone = models.CharField(max_length=15, blank=True)
-    emergency_contact_email = models.EmailField(blank=True)
-    
-    # Insurance Information
-    insurance_provider = models.CharField(max_length=100, blank=True)
-    insurance_policy_number = models.CharField(max_length=50, blank=True)
-    
-    # Healthcare Preferences
-    preferred_hospital = models.CharField(max_length=200, blank=True)
-    primary_doctor_name = models.CharField(max_length=100, blank=True)
-    primary_doctor_phone = models.CharField(max_length=15, blank=True)
-    
-    # Privacy Settings
-    profile_visibility = models.BooleanField(
-        default=True,
-        help_text="Make basic profile information visible to healthcare providers"
-    )
-    
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+    # Basic Information
+    phone = models.CharField(max_length=15, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, blank=True)
+    height = models.FloatField(null=True, blank=True, help_text="Height in cm")
+    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+
+    # Activity Level
+    activity_level = models.CharField(max_length=20, choices=ACTIVITY_CHOICES, default='moderate')
+
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-    
-    class Meta:
-        db_table = 'accounts_user'
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
-    
+
     def __str__(self):
-        return f"{self.get_full_name()} ({self.email})"
-    
-    def get_full_name(self):
-        """Return the user's full name or username if name is not available"""
-        if self.first_name and self.last_name:
-            return f"{self.first_name} {self.last_name}"
-        return self.username
-    
-    def get_age(self):
-        """Calculate and return user's age"""
-        if self.date_of_birth:
-            from datetime import date
-            today = date.today()
-            return today.year - self.date_of_birth.year - (
-                (today.month, today.day) < (self.date_of_birth.month, self.date_of_birth.day)
-            )
-        return None
-    
-    def get_bmi(self):
-        """Calculate and return BMI if height and weight are available"""
-        if self.height and self.current_weight:
-            height_m = self.height / 100  # Convert cm to meters
-            bmi = self.current_weight / (height_m ** 2)
-            return round(bmi, 1)
-        return None
-    
-    def get_bmi_category(self):
-        """Return BMI category based on WHO standards"""
-        bmi = self.get_bmi()
-        if bmi is None:
-            return "Unknown"
-        elif bmi < 18.5:
-            return "Underweight"
-        elif bmi < 25:
-            return "Normal weight"
-        elif bmi < 30:
-            return "Overweight"
-        else:
-            return "Obese"
-    
+        return f"{self.user.username}'s Profile"
+
+    def get_absolute_url(self):
+        return reverse('accounts:profile')
+
     def save(self, *args, **kwargs):
-        """Override save to resize profile pictures"""
         super().save(*args, **kwargs)
-        
+
+        # Resize image
         if self.profile_picture:
             img = Image.open(self.profile_picture.path)
             if img.height > 300 or img.width > 300:
@@ -161,12 +53,49 @@ class User(AbstractUser):
                 img.thumbnail(output_size)
                 img.save(self.profile_picture.path)
 
+class MedicalProfile(models.Model):
+    """Medical profile information"""
+
+    BLOOD_GROUP_CHOICES = [
+        ('A+', 'A+'), ('A-', 'A-'),
+        ('B+', 'B+'), ('B-', 'B-'),
+        ('AB+', 'AB+'), ('AB-', 'AB-'),
+        ('O+', 'O+'), ('O-', 'O-'),
+    ]
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='medical_profile')
+
+    # Medical Information
+    blood_group = models.CharField(max_length=3, choices=BLOOD_GROUP_CHOICES, blank=True)
+    allergies = models.TextField(blank=True, help_text="List any known allergies")
+    medical_conditions = models.TextField(blank=True, help_text="Chronic conditions, past surgeries, etc.")
+    current_medications = models.TextField(blank=True, help_text="Current medications and dosages")
+
+    # Emergency Contact
+    emergency_contact_name = models.CharField(max_length=100, blank=True)
+    emergency_contact_phone = models.CharField(max_length=15, blank=True)
+    emergency_contact_relation = models.CharField(max_length=50, blank=True)
+
+    # Insurance Information
+    insurance_provider = models.CharField(max_length=100, blank=True)
+    policy_number = models.CharField(max_length=50, blank=True)
+
+    # Doctor Information
+    primary_doctor = models.CharField(max_length=100, blank=True)
+    doctor_phone = models.CharField(max_length=15, blank=True)
+    preferred_hospital = models.CharField(max_length=100, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s Medical Profile"
 
 class UserHealthProfile(models.Model):
     """Additional health profile information that can be updated frequently"""
-    
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='health_profile')
-    
+
     # Health Goals
     GOAL_CHOICES = [
         ('weight_loss', 'Weight Loss'),
@@ -180,28 +109,23 @@ class UserHealthProfile(models.Model):
     target_weight = models.FloatField(null=True, blank=True)
     daily_calorie_target = models.IntegerField(null=True, blank=True)
     daily_water_target = models.FloatField(default=8.0, help_text="Target water intake in glasses")
-    
+
     # Health Metrics Targets
     target_steps_per_day = models.IntegerField(default=10000)
     target_exercise_minutes_per_week = models.IntegerField(default=150)
-    
+
     # Notification Preferences
     medication_reminders = models.BooleanField(default=True)
     appointment_reminders = models.BooleanField(default=True)
     health_tips = models.BooleanField(default=True)
     weekly_reports = models.BooleanField(default=True)
-    
+
     # Privacy Settings
     share_data_with_doctor = models.BooleanField(default=False)
     allow_health_insights = models.BooleanField(default=True)
-    
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'accounts_user_health_profile'
-        verbose_name = 'User Health Profile'
-        verbose_name_plural = 'User Health Profiles'
-    
+
     def __str__(self):
-        return f"{self.user.get_full_name()}'s Health Profile"
+        return f"{self.user.username}'s Health Profile"

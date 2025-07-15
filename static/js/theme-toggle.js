@@ -1,78 +1,31 @@
 // Theme Toggle Functionality
-class ThemeManager {
-    constructor() {
-        this.theme = localStorage.getItem('theme') || 'light';
-        this.themeToggle = document.getElementById('themeToggle');
-        this.themeIcon = document.getElementById('themeIcon');
-        
-        this.init();
-    }
-    
-    init() {
-        // Set initial theme
-        this.setTheme(this.theme);
-        
-        // Add event listener to toggle button
-        if (this.themeToggle) {
-            this.themeToggle.addEventListener('click', () => this.toggleTheme());
-        }
-    }
-    
-    setTheme(theme) {
-        this.theme = theme;
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        
-        // Update icon
-        if (this.themeIcon) {
-            if (theme === 'dark') {
-                this.themeIcon.className = 'fas fa-sun';
-                this.themeToggle.setAttribute('title', 'Switch to light theme');
-            } else {
-                this.themeIcon.className = 'fas fa-moon';
-                this.themeToggle.setAttribute('title', 'Switch to dark theme');
-            }
-        }
-        
-        // Dispatch custom event for other components
-        document.dispatchEvent(new CustomEvent('themeChanged', { 
-            detail: { theme: theme }
-        }));
-    }
-    
-    toggleTheme() {
-        const newTheme = this.theme === 'light' ? 'dark' : 'light';
-        this.setTheme(newTheme);
-        
-        // Add smooth transition effect
-        document.body.style.transition = 'all 0.3s ease';
-        setTimeout(() => {
-            document.body.style.transition = '';
-        }, 300);
-    }
-    
-    getTheme() {
-        return this.theme;
-    }
-}
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const html = document.documentElement;
 
-// Initialize theme manager when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    window.themeManager = new ThemeManager();
-});
+    // Check for saved theme preference or default to 'light'
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', currentTheme);
 
-// Auto-detect system preference if no saved theme
-if (!localStorage.getItem('theme')) {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    localStorage.setItem('theme', prefersDark ? 'dark' : 'light');
-}
+    // Update icon based on current theme
+    updateThemeIcon(currentTheme);
 
-// Listen for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-    if (!localStorage.getItem('theme-user-set')) {
-        const theme = e.matches ? 'dark' : 'light';
-        if (window.themeManager) {
-            window.themeManager.setTheme(theme);
+    // Theme toggle event listener
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function() {
+            const current = html.getAttribute('data-theme');
+            const newTheme = current === 'light' ? 'dark' : 'light';
+
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+    }
+
+    function updateThemeIcon(theme) {
+        if (themeIcon) {
+            themeIcon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
         }
     }
 });

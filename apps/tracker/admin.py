@@ -1,10 +1,18 @@
 
 from django.contrib import admin
-from .models import WeightEntry, Exercise, WaterIntake, SleepRecord, MoodEntry
+from .models import WeightEntry, VitalSigns, Exercise, Meal, HealthGoal
 
 @admin.register(WeightEntry)
 class WeightEntryAdmin(admin.ModelAdmin):
     list_display = ['user', 'weight', 'date_recorded', 'created_at']
+    list_filter = ['date_recorded']
+    search_fields = ['user__username']
+    date_hierarchy = 'date_recorded'
+    ordering = ['-date_recorded']
+
+@admin.register(VitalSigns)
+class VitalSignsAdmin(admin.ModelAdmin):
+    list_display = ['user', 'systolic_bp', 'diastolic_bp', 'heart_rate', 'blood_glucose', 'temperature', 'date_recorded']
     list_filter = ['date_recorded']
     search_fields = ['user__username']
     date_hierarchy = 'date_recorded'
@@ -18,26 +26,18 @@ class ExerciseAdmin(admin.ModelAdmin):
     date_hierarchy = 'date_performed'
     ordering = ['-date_performed']
 
-@admin.register(WaterIntake)
-class WaterIntakeAdmin(admin.ModelAdmin):
-    list_display = ['user', 'amount_ml', 'date_recorded', 'created_at']
-    list_filter = ['date_recorded']
-    search_fields = ['user__username']
-    date_hierarchy = 'date_recorded'
-    ordering = ['-date_recorded']
+@admin.register(Meal)
+class MealAdmin(admin.ModelAdmin):
+    list_display = ['user', 'name', 'meal_type', 'calories', 'date_consumed']
+    list_filter = ['meal_type', 'date_consumed']
+    search_fields = ['user__username', 'name']
+    date_hierarchy = 'date_consumed'
+    ordering = ['-date_consumed']
 
-@admin.register(SleepRecord)
-class SleepRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'sleep_date', 'bedtime', 'wake_time', 'hours_slept', 'quality_rating']
-    list_filter = ['sleep_date', 'quality_rating']
-    search_fields = ['user__username']
-    date_hierarchy = 'sleep_date'
-    ordering = ['-sleep_date']
-
-@admin.register(MoodEntry)
-class MoodEntryAdmin(admin.ModelAdmin):
-    list_display = ['user', 'mood_rating', 'energy_level', 'date_recorded']
-    list_filter = ['mood_rating', 'energy_level', 'date_recorded']
-    search_fields = ['user__username']
-    date_hierarchy = 'date_recorded'
-    ordering = ['-date_recorded']
+@admin.register(HealthGoal)
+class HealthGoalAdmin(admin.ModelAdmin):
+    list_display = ['user', 'title', 'goal_type', 'target_value', 'current_value', 'status', 'target_date']
+    list_filter = ['goal_type', 'status', 'target_date']
+    search_fields = ['user__username', 'title']
+    date_hierarchy = 'target_date'
+    ordering = ['-created_at']

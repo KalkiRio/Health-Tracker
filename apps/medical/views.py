@@ -4,14 +4,23 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse, Http404
 from django.core.paginator import Paginator
+from django.utils import timezone
 from .models import MedicalReport, Appointment
 from .forms import MedicalReportForm, AppointmentForm
-from apps.accounts.models import MedicalProfile
 
 @login_required
 def profile(request):
-    medical_profile, created = MedicalProfile.objects.get_or_create(user=request.user)
-    return render(request, 'medical/medical_profile.html', {'medical_profile': medical_profile})
+    # Get user's medical profile data from UserProfile
+    user_profile = request.user.userprofile
+    context = {
+        'user_profile': user_profile,
+        'recent_reports': request.user.medical_reports.all()[:5],
+        'upcoming_appointments': request.user.appointments.filter(
+            appointment_date__gte=timezone.now(),
+            status='scheduled'
+        )[:5]
+    }
+    return render(request, 'medical/medical_profile.html', context)
 
 @login_required
 def reports(request):
@@ -92,7 +101,7 @@ def appointments(request):
         'current_status': status,
     }
     
-    return render(request, 'medical/appointments.html', context)
+    return render(request, 'medical/appointments_list.html', context)
 
 @login_required
 def add_appointment(request):

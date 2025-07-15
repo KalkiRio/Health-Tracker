@@ -51,18 +51,16 @@ class Appointment(models.Model):
     
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
     doctor_name = models.CharField(max_length=100)
-    clinic_hospital = models.CharField(max_length=100)
+    clinic_hospital = models.CharField(max_length=100, blank=True)
     appointment_date = models.DateTimeField()
     duration_minutes = models.IntegerField(default=30)
     reason = models.CharField(max_length=200)
     notes = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
-    reminder_sent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        ordering = ['appointment_date']
+        ordering = ['-appointment_date']
     
     def __str__(self):
         return f"{self.user.username} - {self.doctor_name} on {self.appointment_date.date()}"

@@ -1,0 +1,148 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - HealthTracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Welcome back, {{ user.first_name|default:user.username }}!</h1>
+        </div>
+    </div>
+    
+    <!-- Quick Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Current Weight</h5>
+                    <h3>{{ current_weight|default:"--" }}{% if current_weight %} kg{% endif %}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">BMI</h5>
+                    <h3>{{ bmi|default:"--" }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Active Goals</h5>
+                    <h3>{{ active_goals_count }}</h3>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Today's Exercises</h5>
+                    <h3>{{ today_exercises_count }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions Row -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h3>Quick Actions</h3>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'tracker:add_weight' %}" class="btn btn-outline-primary w-100 mb-2">
+                <i class="fas fa-weight"></i><br>Log Weight
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'tracker:add_exercise' %}" class="btn btn-outline-success w-100 mb-2">
+                <i class="fas fa-dumbbell"></i><br>Log Exercise
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'tracker:add_meal' %}" class="btn btn-outline-info w-100 mb-2">
+                <i class="fas fa-utensils"></i><br>Log Meal
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'medicines:add_medicine' %}" class="btn btn-outline-warning w-100 mb-2">
+                <i class="fas fa-pills"></i><br>Add Medicine
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'medical:upload_report' %}" class="btn btn-outline-danger w-100 mb-2">
+                <i class="fas fa-file-medical"></i><br>Upload Report
+            </a>
+        </div>
+        <div class="col-md-2">
+            <a href="{% url 'tracker:goals' %}" class="btn btn-outline-secondary w-100 mb-2">
+                <i class="fas fa-target"></i><br>Set Goals
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Recent Weight Entries</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_weights %}
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for weight in recent_weights %}
+                                    <tr>
+                                        <td>{{ weight.date_recorded }}</td>
+                                        <td>{{ weight.weight }} kg</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No weight entries yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Upcoming Medicine Reminders</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_reminders %}
+                        {% for reminder in upcoming_reminders %}
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <div>
+                                <strong>{{ reminder.medicine.name }}</strong><br>
+                                <small class="text-muted">{{ reminder.medicine.dosage }}{{ reminder.medicine.dosage_unit }}</small>
+                            </div>
+                            <span class="badge bg-primary">{{ reminder.time }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No medicine reminders set.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

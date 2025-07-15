@@ -1,5 +1,3 @@
-#Note: This project is under redevelopment and is being updated for better look and feel, if you want to contribute feel free to do so, Thanks.
-
 # HealthTracker - Personal Health Management System
 
 ## 🎯 Project Overview
@@ -30,8 +28,8 @@ healthtracker/
 ├── README.md
 ├── .env.example
 ├── .gitignore
-├── Procfile                    # For Heroku deployment
-├── runtime.txt                 # Python version for deployment
+├── .replit                     # Replit configuration
+├── render.yaml                 # Render deployment config
 ├── healthtracker/              # Main project directory
 │   ├── __init__.py
 │   ├── settings.py
@@ -48,7 +46,7 @@ healthtracker/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── forms.py
-│   │   ├── serializers.py      # For API endpoints
+│   │   ├── tests.py
 │   │   └── migrations/
 │   ├── tracker/                # Core health tracking
 │   │   ├── __init__.py
@@ -58,7 +56,7 @@ healthtracker/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── forms.py
-│   │   ├── utils.py            # Helper functions
+│   │   ├── tests.py
 │   │   └── migrations/
 │   ├── medical/                # Medical records & documents
 │   │   ├── __init__.py
@@ -68,7 +66,7 @@ healthtracker/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── forms.py
-│   │   ├── utils.py            # File handling utilities
+│   │   ├── tests.py
 │   │   └── migrations/
 │   ├── medicines/              # Medicine & prescription tracking
 │   │   ├── __init__.py
@@ -78,7 +76,7 @@ healthtracker/
 │   │   ├── views.py
 │   │   ├── urls.py
 │   │   ├── forms.py
-│   │   ├── tasks.py            # For medication reminders
+│   │   ├── tests.py
 │   │   └── migrations/
 │   └── dashboard/              # Dashboard and analytics
 │       ├── __init__.py
@@ -87,50 +85,22 @@ healthtracker/
 │       ├── models.py
 │       ├── views.py
 │       ├── urls.py
+│       ├── tests.py
 │       └── migrations/
 ├── templates/                  # HTML templates
 │   ├── base.html
 │   ├── registration/
 │   │   ├── login.html
-│   │   ├── register.html
-│   │   └── profile.html
-│   ├── tracker/
-│   │   ├── dashboard.html
-│   │   ├── add_weight.html
-│   │   ├── add_exercise.html
-│   │   ├── add_meal.html
-│   │   └── goals.html
-│   ├── medical/
-│   │   ├── medical_profile.html
-│   │   ├── upload_report.html
-│   │   ├── reports_list.html
-│   │   └── report_detail.html
-│   ├── medicines/
-│   │   ├── medicine_list.html
-│   │   ├── add_medicine.html
-│   │   ├── prescription_upload.html
-│   │   └── medication_schedule.html
-│   └── includes/
-│       ├── navbar.html
-│       ├── sidebar.html
-│       └── footer.html
+│   │   └── register.html
+│   └── dashboard/
+│       └── dashboard.html
 ├── static/                     # Static files
 │   ├── css/
 │   │   ├── style.css
-│   │   ├── themes.css
-│   │   └── responsive.css
-│   ├── js/
-│   │   ├── main.js
-│   │   ├── charts.js
-│   │   ├── theme-toggle.js
-│   │   └── dashboard.js
-│   ├── images/
-│   │   ├── logo.png
-│   │   └── default-avatar.png
-│   └── vendors/                # Third-party libraries
-│       ├── bootstrap/
-│       ├── chart.js/
-│       └── fontawesome/
+│   │   └── themes.css
+│   └── js/
+│       ├── main.js
+│       └── theme-toggle.js
 ├── media/                      # User uploaded files
 │   ├── profile_pics/
 │   ├── medical_reports/
@@ -139,61 +109,32 @@ healthtracker/
 │   │   ├── xrays/
 │   │   └── other_documents/
 │   └── medicine_images/
-└── tests/                      # Test files
-    ├── __init__.py
-    ├── test_models.py
-    ├── test_views.py
-    └── test_forms.py
+└── attached_assets/            # Project documentation
 ```
-
-1. **Environment Setup**
-   - Create virtual environment
-   - Install Django and dependencies
-   - Setup project structure
-   - Configure settings for development/production
-
-2. **User Authentication System**
-   - Custom User model with health profile
-   - Registration and login functionality
-   - User profile management
-   - Password reset functionality
-
-3. **Basic UI Framework**
-   - Create base templates
-   - Implement responsive design with CSS Grid/Flexbox
-   - Add theme toggle functionality
-   - Setup static files handling
-
-1. **Production Preparation**
-   - Environment variables setup
-   - Database migration scripts
-   - Static files configuration
-   - Security settings
-
-2. **Deployment**
-   - Heroku deployment setup
-   - Database configuration
-   - Domain and SSL setup
-   - Performance optimization
 
 ## 🔧 Technology Stack
 
 **Backend:**
-- Django 5.0 +
-- Django REST Framework (for API endpoints)
+- Django 5.2.3
 - PostgreSQL (production) / SQLite (development)
 - Pillow (image handling)
+- python-decouple (environment management)
+- dj-database-url (database configuration)
 
 **Frontend:**
 - HTML5, CSS3, JavaScript (ES6+)
 - Bootstrap 5 (responsive framework)
-- Chart.js (data visualization)
 - Font Awesome (icons)
+- Chart.js (data visualization)
 
 **Deployment:**
-- Heroku (free tier)
-- WhiteNoise (static files)
+- Render (cloud hosting)
 - Gunicorn (WSGI server)
+- PostgreSQL (production database)
+
+**Development:**
+- Replit (online IDE)
+- SQLite (development database)
 
 ## 📊 Database Models Overview
 
@@ -269,19 +210,22 @@ healthtracker/
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.9+
+- Python 3.12+
 - pip
 - Git
 
 ### Installation Steps
+
+#### Option 1: Replit (Recommended)
+1. Fork this repository on Replit
+2. The environment will be automatically configured
+3. Run the project using the Run button
+
+#### Option 2: Local Development
 ```bash
 # Clone the repository
-git clone https://github.com/KalkiRio/Health-Tracker.git
+git clone https://github.com/your-username/healthtracker.git
 cd healthtracker
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
@@ -296,11 +240,8 @@ python manage.py migrate
 # Create superuser
 python manage.py createsuperuser
 
-# Collect static files
-python manage.py collectstatic
-
 # Run development server
-python manage.py runserver
+python manage.py runserver 0.0.0.0:3000
 ```
 
 ## 🧪 Testing
@@ -312,20 +253,10 @@ python manage.py test
 # Run specific app tests
 python manage.py test apps.tracker
 
-# Run with coverage
+# Run with coverage (if coverage is installed)
 coverage run --source='.' manage.py test
 coverage report
 ```
-
-## 📚 API Documentation
-
-The application includes RESTful API endpoints for:
-- User authentication
-- Health data CRUD operations
-- Dashboard analytics
-- Data export
-
-API documentation available at `/api/docs/` when running the server.
 
 ## 🎨 Design System
 
@@ -353,41 +284,52 @@ API documentation available at `/api/docs/` when running the server.
 - SQL injection prevention
 - XSS protection
 - Secure password hashing
-- Rate limiting
 - Input validation and sanitization
+- Environment-based configuration
 
 ## 📈 Performance Optimization
 
 - Database query optimization
 - Static file compression
 - Lazy loading for images
-- Caching strategies
 - Minified CSS/JS
 
 ## 🚀 Deployment Guide
 
-### Heroku Deployment
+### Render Deployment
 
 1. **Prepare for Deployment**
+   - Ensure `render.yaml` is configured
+   - Set up environment variables
+   - Configure database settings
+
+2. **Deploy to Render**
    ```bash
-   # Install Heroku CLI
-   # Create Procfile and runtime.txt
+   # Connect your GitHub repository to Render
+   # Render will automatically detect render.yaml
+   # Set environment variables in Render dashboard:
+   # - SECRET_KEY (generate a secure key)
+   # - DEBUG=False
+   # - ALLOWED_HOSTS=*
    ```
 
-2. **Create Heroku App**
-   ```bash
-   heroku create your-healthtracker-app
-   heroku config:set DEBUG=False
-   heroku config:set SECRET_KEY=your-secret-key
-   ```
+3. **Database Setup**
+   - Render will automatically create PostgreSQL database
+   - Database URL will be injected as environment variable
+   - Migrations will run automatically during build
 
-3. **Deploy**
-   ```bash
-   git add .
-   git commit -m "Ready for deployment"
-   git push heroku main
-   heroku run python manage.py migrate
-   ```
+4. **Static Files**
+   - Static files are collected during build process
+   - Served directly by the Django application
+
+### Environment Variables
+Create a `.env` file with:
+```
+SECRET_KEY=your-secret-key-here
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,0.0.0.0
+DATABASE_URL=  # Leave empty for SQLite in development
+```
 
 ## 🤝 Contributing
 
@@ -403,8 +345,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 📞 Support
 
-For questions or issues, please open an issue on GitHub or contact "ribhuroy@outlook.com" .
+For questions or issues, please open an issue on GitHub or contact "ribhuroy@outlook.com".
 
 ---
 
-**Built with ❤️ using Django**
+**Built with ❤️ using Django and deployed on Render**
